@@ -1,0 +1,8 @@
+# 実データのCSVはコミットしない（サンプルのみ例外）
+*.csv
+!sample/sample_joblog.csv
+
+.DS_Store
+Thumbs.db
+node_modules/
+*.log

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ジョブログ分析ツール｜月単位比較</title>
+<meta name="description" content="ジョブログCSVを読み込み、事業部単位で「作／創」バランスの前月比較を自動生成するブラウザ完結型アプリ">
+<meta name="theme-color" content="#2a5db0">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./assets/icons/icon-192.png">
+<link rel="apple-touch-icon" href="./assets/icons/apple-touch-icon.png">
+<link rel="stylesheet" href="./assets/css/styles.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <img src="./assets/icons/icon-192.png" alt="" width="36" height="36">
+      <div>
+        <h1>ジョブログ分析ツール</h1>
+        <p>CSVを読み込み、月を1つ選ぶだけで「前月との作／創バランス比較」を事業部単位で自動生成します</p>
+      </div>
+    </div>
+    <p class="privacy">データはブラウザ内でのみ処理され、どこにも送信されません（オフライン動作対応）</p>
+  </header>
+
+  <section class="card dropzone" id="dropzone" tabindex="0" role="button" aria-label="ジョブログCSVを選択">
+    <p class="big">ジョブログCSVをドラッグ＆ドロップ、またはクリックして選択</p>
+    <p class="desc">必須列：日付／登録者名／業務区分／時間　（UTF-8・Shift_JIS どちらも自動判定）</p>
+    <div class="actions">
+      <button class="btn" type="button" id="pickBtn">CSVを選択</button>
+      <button class="btn ghost" type="button" id="demoBtn">サンプルデータで試す</button>
+    </div>
+    <input type="file" id="fileInput" accept=".csv,text/csv" hidden>
+    <p id="fileError" class="caveat hidden" role="alert"></p>
+  </section>
+
+  <main id="appRoot" hidden>
+    <section class="card">
+      <div class="card-head">
+        <div>
+          <h2>分類区分の設定（作／創）</h2>
+          <p class="desc">「業務区分」ごとに、定型・運用的な業務を「作」、思考負荷の高い創造的な業務を「創」に割り当てます。未知の区分は初期値「作」で表示されるので、必要に応じて切り替えてください。設定はこの端末に保存されます。</p>
+        </div>
+        <button class="btn ghost small" type="button" id="resetClassBtn">初期設定に戻す</button>
+      </div>
+      <div id="categoryEditor"></div>
+      <p id="unknownCategoryNote" class="caveat hidden"></p>
+    </section>
+
+    <section class="card">
+      <h2>比較する月を選択</h2>
+      <p class="desc">選んだ月と、その前月（暦月ベース）を自動で比較します。前月のデータが無い場合はその旨を表示します。</p>
+      <div class="row-controls">
+        <label class="field">
+          <span>対象月</span>
+          <select id="monthSelect"></select>
+        </label>
+        <button class="btn ghost small" type="button" id="exportBtn">集計結果をCSVで書き出し</button>
+      </div>
+    </section>
+
+    <div id="resultSection"></div>
+
+    <footer id="footerNote"></footer>
+  </main>
+</div>
+
+<script src="./assets/js/csv.js"></script>
+<script src="./assets/js/charts.js"></script>
+<script src="./assets/js/app.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('./sw.js').catch(function () {});
+    });
+  }
+</script>
+</body>
+</html>
